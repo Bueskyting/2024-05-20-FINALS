@@ -13,7 +13,7 @@
 /forum-frontend/node_modules
 # 
 
-# npm i express mongoose bcryptjs jsonwebtoken cors nodemon dotenv
+# npm i express mongoose bcryptjs jsonwebtoken cors nodemon dotenv axios
 
 forum-backend/node_modules
 
