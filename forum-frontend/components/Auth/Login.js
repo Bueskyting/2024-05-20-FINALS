@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
-import axios from 'axios'
-import styles from "./Login.module.css"
+import { useRouter } from 'next/router'
+import api, { errorMessage } from '../../lib/api'
+import { saveAuth, safeRedirect } from '../../lib/auth'
 
 const Login = () => {
+    const router = useRouter()
     const [formData, setFormData] = useState({ email: '', password: '' })
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
-    const [success, setSuccess] = useState('')
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value })
@@ -15,7 +16,6 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault()
         setError('')
-        setSuccess('')
 
         if (!formData.email || !formData.password) {
             setError('Please fill in both fields')
@@ -24,41 +24,48 @@ const Login = () => {
 
         setLoading(true)
         try {
-            const res = await axios.post('/api/auth/login', formData)
-            setLoading(false)
-            setSuccess('Login successful')
-            console.log(res.data)
+            const res = await api.post('/auth/login', formData)
+            saveAuth(res.data)
+            router.push(safeRedirect(router.query.next))
         } catch (err) {
+            setError(errorMessage(err, 'Login failed'))
             setLoading(false)
-            setError(err.response?.data?.message || 'Login failed')
         }
     }
 
     return (
-        <div>
-            <h2>Login</h2>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-            {success && <p style={{ color: 'green' }}>{success}</p>}
-            <form onSubmit={handleSubmit}>
-                <input 
-                    type="email" 
-                    name="email" 
-                    placeholder="Email" 
-                    onChange={handleChange} 
+        <form onSubmit={handleSubmit}>
+            {error && <p className="alert alert-error">{error}</p>}
+            <div className="field">
+                <label htmlFor="login-email">Email</label>
+                <input
+                    id="login-email"
+                    className="input"
+                    type="email"
+                    name="email"
+                    autoComplete="email"
+                    placeholder="you@example.com"
+                    onChange={handleChange}
                     value={formData.email}
                 />
-                <input 
-                    type="password" 
-                    name="password" 
-                    placeholder="Password" 
-                    onChange={handleChange} 
+            </div>
+            <div className="field">
+                <label htmlFor="login-password">Password</label>
+                <input
+                    id="login-password"
+                    className="input"
+                    type="password"
+                    name="password"
+                    autoComplete="current-password"
+                    placeholder="Your password"
+                    onChange={handleChange}
                     value={formData.password}
                 />
-                <button type="submit" disabled={loading}>
-                    {loading ? 'Logging in...' : 'Login'}
-                </button>
-            </form>
-        </div>
+            </div>
+            <button type="submit" className="btn btn-primary btn-block" disabled={loading}>
+                {loading ? 'Logging in...' : 'Log in'}
+            </button>
+        </form>
     )
 }
 

@@ -1,32 +1,12 @@
-# Create .env file and add
-
-# MONGODB_URI = "your_connection_string"
-# PORT = 5000
-# JWT_SECRET = 'your_jwt_secret'
-
-/forum-backend/.env
-/forum-frontend/.env
-
-# 
-/forum-backend/originalignored.txt
-/forum-frontend/originalignore.txt
-/forum-frontend/node_modules
-# 
-
-# npm i express mongoose bcryptjs jsonwebtoken cors nodemon dotenv axios
-
-forum-backend/node_modules
-
-# To start backend server, open forum-backend with VSC and type in terminal - nodemon server.js
-
-# To start frontend server, open forum-frontend with VSC and type in terminal - npm run dev
-
-# Forum is currently in development stage and requires a lot of fixing.
+# Environment files (see forum-backend/.env.example)
+.env
+.env.local
 
 # dependencies
+node_modules/
 /forum-frontend/.pnp
-/forum-frontend.pnp.js
-/forum-frontend.yarn/install-state.gz
+/forum-frontend/.pnp.js
+/forum-frontend/.yarn/install-state.gz
 
 # testing
 /forum-frontend/coverage
@@ -39,20 +19,23 @@ forum-backend/node_modules
 /forum-frontend/build
 
 # misc
-/forum-frontend.DS_Store
-/forum-frontend*.pem
+.DS_Store
+*.pem
 
 # debug
-/forum-frontendnpm-debug.log*
-/forum-frontendyarn-debug.log*
-/forum-frontendyarn-error.log*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
 # vercel
-/forum-frontend.vercel
+/forum-frontend/.vercel
 
 # typescript
-/forum-frontend*.tsbuildinfo
-/forum-frontendnext-env.d.ts
+/forum-frontend/*.tsbuildinfo
+/forum-frontend/next-env.d.ts
 
+# local notes
+/forum-backend/originalignored.txt
+/forum-frontend/originalignore.txt
 api_test.txt
 finals.txt

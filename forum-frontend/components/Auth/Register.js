@@ -1,9 +1,13 @@
 import React, { useState } from 'react'
-import axios from 'axios'
+import { useRouter } from 'next/router'
+import api, { errorMessage } from '../../lib/api'
+import { saveAuth, safeRedirect } from '../../lib/auth'
 
 const Register = () => {
+    const router = useRouter()
     const [formData, setFormData] = useState({ email: '', password: '', name: '' })
     const [error, setError] = useState('')
+    const [loading, setLoading] = useState(false)
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value })
@@ -11,26 +15,70 @@ const Register = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        try {
-            const res = await axios.post('/api/auth/register', formData)
-            console.log(res.data)
+        setError('')
 
+        if (!formData.email || !formData.password || !formData.name) {
+            setError('Please fill in all fields')
+            return
+        }
+
+        setLoading(true)
+        try {
+            const res = await api.post('/auth/register', formData)
+            saveAuth(res.data)
+            router.push(safeRedirect(router.query.next))
         } catch (err) {
-            setError(err.response.data.message || 'Registration failed')
+            setError(errorMessage(err, 'Registration failed'))
+            setLoading(false)
         }
     }
 
     return (
-        <div>
-            <h2>Register</h2>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-            <form onSubmit={handleSubmit}>
-                <input type="email" name="email" placeholder="Email" onChange={handleChange} />
-                <input type="password" name="password" placeholder="Password" onChange={handleChange} />
-                <input type="text" name="name" placeholder="Name" onChange={handleChange} />
-                <button type="submit">Register</button>
-            </form>
-        </div>
+        <form onSubmit={handleSubmit}>
+            {error && <p className="alert alert-error">{error}</p>}
+            <div className="field">
+                <label htmlFor="register-name">Display name</label>
+                <input
+                    id="register-name"
+                    className="input"
+                    type="text"
+                    name="name"
+                    autoComplete="nickname"
+                    placeholder="How others will see you"
+                    onChange={handleChange}
+                    value={formData.name}
+                />
+            </div>
+            <div className="field">
+                <label htmlFor="register-email">Email</label>
+                <input
+                    id="register-email"
+                    className="input"
+                    type="email"
+                    name="email"
+                    autoComplete="email"
+                    placeholder="you@example.com"
+                    onChange={handleChange}
+                    value={formData.email}
+                />
+            </div>
+            <div className="field">
+                <label htmlFor="register-password">Password</label>
+                <input
+                    id="register-password"
+                    className="input"
+                    type="password"
+                    name="password"
+                    autoComplete="new-password"
+                    placeholder="Choose a password"
+                    onChange={handleChange}
+                    value={formData.password}
+                />
+            </div>
+            <button type="submit" className="btn btn-primary btn-block" disabled={loading}>
+                {loading ? 'Creating account...' : 'Create account'}
+            </button>
+        </form>
     )
 }
 

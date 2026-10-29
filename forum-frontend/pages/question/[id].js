@@ -1,21 +1,16 @@
 import React from 'react'
 import { useRouter } from 'next/router'
 import QuestionDetail from '../../components/Forum/QuestionDetail'
-import Header from '../../components/Layout/Header'
-import Footer from '../../components/Layout/Footer'
+import Layout from '../../components/Layout/Layout'
 
 const QuestionPage = () => {
     const router = useRouter()
     const { id } = router.query
 
     return (
-        <div>
-            <Header />
-            <main>
-                <QuestionDetail id={id} />
-            </main>
-            <Footer />
-        </div>
+        <Layout title="Thread">
+            <QuestionDetail id={id} />
+        </Layout>
     )
 }
 
